@@ -26,14 +26,14 @@
                     for (lcv = 0; lcv < length; lcv += 1) data.push(random(1000));
                     return data;
                 };
-                var generate_data = function(){
-                    var lcv, data = [], slaves = random(20) + 1;
-                    for (lcv = 0; lcv < slaves; lcv += 1) data.push(random_array(random(50) + 1));
+                var generate_data = function(length){
+                    var lcv, data = [];
+                    for (lcv = 0; lcv < length; lcv += 1) data.push(random_array(random(50) + 1));
                     return data;
                 };
                 var page_load = function(){
                     sys = new distrib();
-                    var arrs = generate_data(), complete = [];
+                    var arrs = generate_data(random(20) + 1), complete = [];
                     arrs.map(function(arr){
                         new sys.slave(arr);
                         complete = complete.concat(arr);
