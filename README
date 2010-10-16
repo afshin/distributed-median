@@ -1,5 +1,6 @@
-I was asked about how to implement a distributed algorithm that would calculate
-the median of a list of numbers distributed over multiple machines. No one
-machine can hold all of the data. This demo shows an "omniscient" supermachine
-that knows all the data on the left-hand side and simulated multiple machines
-on the right-hand side that implement the distributed median algorithm.
+During an interview, I was asked about how to implement a distributed algorithm
+that would calculate the median of a list of numbers distributed over multiple
+machines. No one machine can hold all of the data. This demo shows an
+"omniscient" supermachine that knows all the data on the left-hand side and
+simulated multiple machines on the right-hand side that implement the
+distributed median algorithm. I think it's a really good question.
