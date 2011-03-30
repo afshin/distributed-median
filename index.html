@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>distributed median demo</title>
+        <style type="text/css" media="screen">
+            body{
+                font-family: helvetica, arial;
+                font-size: 0.85em;
+            }
+            div{
+                padding: 2px;
+            }
+        </style>
+        <script src="skeleton.js" type="text/javascript" charset="utf-8"></script>
+        <script src="median.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+            window.onload = function(){
+                var sys;
+                var random = function(seed){
+                    return Math.floor(Math.random() * seed);
+                };
+                var random_array = function(length){
+                    var lcv, data = [];
+                    for (lcv = 0; lcv < length; lcv += 1) data.push(random(1000));
+                    return data;
+                };
+                var generate_data = function(length){
+                    var lcv, data = [];
+                    for (lcv = 0; lcv < length; lcv += 1) data.push(random_array(random(50) + 1));
+                    return data;
+                };
+                var page_load = function(){
+                    sys = new distrib();
+                    var arrs = generate_data(random(20) + 1), complete = [];
+                    arrs.map(function(arr){
+                        new sys.slave(arr);
+                        complete = complete.concat(arr);
+                    });
+                    complete = complete.sort(function(a, b){return a - b;});
+                    var mid = Math.floor(complete.length / 2);
+                    var median = complete.length % 2 ? complete[mid]
+                        : complete[mid - 1] === complete[mid] ? complete[mid]
+                            : [complete[mid - 1], complete[mid]];
+                    var distrib_median = sys.master.median();
+                    var data_output = '<strong>total (omniscient) data is:</strong> <br />[' + complete.join(', ') + ']<br />';
+                        data_output += '<strong>total data length is:</strong> ' + complete.length + '<br />';
+                    document.getElementById('data').innerHTML = data_output;
+                    var median_output = 'known (omniscient) median is: ' + median + '<br />';
+                        median_output += 'distributed median calculation is: ' + distrib_median + '<br />';
+                    document.getElementById('median').innerHTML = median_output;
+                    var system_output = '<strong>system is comprised of:</strong> <br />' + sys.master.output('<br />');
+                    document.getElementById('system').innerHTML = system_output;
+                };
+                page_load();
+                document.getElementById('button').onclick = page_load;
+            };
+        </script>
+    </head>
+
+    <body>
+        <div id="reload">
+            <form action="." method="post" accept-charset="utf-8">
+                <p><input id="button" type="button" value="regenerate data &amp; recalculate"></p>
+            </form>
+        </div>
+        <div id="data" style="width: 400px; height: 700px; overflow: auto; position: absolute; left: 5px;border: 1px solid black;"></div>
+        <div id="system" style="width: 400px; height: 700px; overflow: auto; position: absolute; left: 815px;border: 1px solid black;"></div>
+        <div id="code" style="width: 400px; position: absolute; left: 410px; border: 1px solid black;">
+            <div id="median"></div>
+            <br /><br />
+            The logic is in <a href="median.js">median.js</a> and a barebones framework for convenience is in <a href="skeleton.js">skeleton.js</a>.
+            <br /><br />
+            Both were written by Afshin.
+        </div>
+    </body>
+</html>
